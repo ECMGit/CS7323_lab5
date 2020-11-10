@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "9933596B-1C45-45B8-BF46-EB4C868602FC"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "84FAB0E4-7B4F-4751-A9DC-49ED4D883CFA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HTTPSwiftExample/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "125"
+            endingLineNumber = "125"
+            landmarkName = "dsid"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B2743779-9AEF-4DEB-A9B7-9324AD5E8DC8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HTTPSwiftExample/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
+            landmarkName = "dsid"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "B2743779-9AEF-4DEB-A9B7-9324AD5E8DC8 - 846e47f1e8d48cba"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HTTPSwiftExample.ViewController.dsid.didset : Swift.Int"
+                  moduleName = "HTTPSwiftExample"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/reidaruss/Desktop/Senior%20Year/Mobile%20App%20Sensing/ICA4/SwiftHTTPExample/HTTPSwiftExample/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123"
+                  offsetFromSymbolStart = "220">
+               </Location>
+               <Location
+                  uuid = "B2743779-9AEF-4DEB-A9B7-9324AD5E8DC8 - 986c9b4e177192c4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in HTTPSwiftExample.ViewController.dsid.didset : Swift.Int"
+                  moduleName = "HTTPSwiftExample"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/reidaruss/Desktop/Senior%20Year/Mobile%20App%20Sensing/ICA4/SwiftHTTPExample/HTTPSwiftExample/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "125"
+                  endingLineNumber = "125"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
