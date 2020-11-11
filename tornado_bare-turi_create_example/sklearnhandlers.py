@@ -11,6 +11,7 @@ from tornado.options import define, options
 from basehandler import BaseHandler
 
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 import pickle
 from bson.binary import Binary
 import json
@@ -23,6 +24,23 @@ class PrintHandlers(BaseHandler):
         '''
         self.set_header("Content-Type", "application/json")
         self.write(self.application.handlers_string.replace('),','),\n'))
+        
+class AddUserHandler(BaseHandler):
+    def post(self):
+        
+        data = json.loads(self.request.body.decode("utf-8"))
+        
+        username = data['username']
+        password = data['password']
+        dsids = []
+        
+        dbid = self.db.users.insert(
+            {"username":username,"password":password,"dsids":dsids}
+            );
+        
+        self.write_json({"username":username,
+                         "password":password,
+                         "dsids":dsids})
 
 class UploadLabeledDatapointHandler(BaseHandler):
     def post(self):
@@ -54,12 +72,13 @@ class RequestNewDatasetId(BaseHandler):
         else:
             newSessionId = float(a['dsid'])+1
         self.write_json({"dsid":newSessionId})
-
 class UpdateModelForDatasetId(BaseHandler):
     def get(self):
         '''Train a new model (or update) for given dataset ID
         '''
         dsid = self.get_int_arg("dsid",default=0)
+        modeltype = self.get_arg("modeltype",default="KNN")
+
 
         # create feature vectors from database
         f=[];
@@ -72,7 +91,13 @@ class UpdateModelForDatasetId(BaseHandler):
             l.append(a['label'])
 
         # fit the model to the data
-        c1 = KNeighborsClassifier(n_neighbors=1);
+        if modeltype == "SVM":
+            print("Using Support Vector Machine")
+            c1 = SVC()
+        
+        else:
+            print("Using K-Nearest Neighbors")
+            c1 = KNeighborsClassifier(n_neighbors=1);
         acc = -1;
         if l:
             c1.fit(f,l) # training
