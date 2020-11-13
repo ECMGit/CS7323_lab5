@@ -133,8 +133,6 @@ class PredictOneFromDatasetId(BaseHandler):
         
         if np.mean(fvals) > 100:
             fvals = 255 - fvals ##convert to white on black if it is black on white
-            
-        fvals = fvals.flatten().tolist()
 
         # load the model from the database (using pickle)
         # we are blocking tornado!! no!!
