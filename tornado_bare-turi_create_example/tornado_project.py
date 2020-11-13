@@ -20,7 +20,7 @@ from tornado.options import define, options
 
 # custom imports
 from basehandler import BaseHandler
-import sklearnhandlers as skh
+import project_handlers as ph
 
 # Setup information for tornado class
 define("port", default=8000, help="run on the given port", type=int)
@@ -34,12 +34,12 @@ class Application(tornado.web.Application):
         '''
 
         handlers = [(r"/[/]?", BaseHandler),
-                    (r"/Handlers[/]?",        skh.PrintHandlers),
-                    (r"/AddUser[/]?",         skh.AddUserHandler),
-                    (r"/AddDataPoint[/]?",    skh.UploadLabeledDatapointHandler),
-                    (r"/GetNewDatasetId[/]?", skh.RequestNewDatasetId),
-                    (r"/UpdateModel[/]?",     skh.UpdateModelForDatasetId),     
-                    (r"/PredictOne[/]?",      skh.PredictOneFromDatasetId),               
+                    (r"/Handlers[/]?",        ph.PrintHandlers),
+                    (r"/AddUser[/]?",         ph.AddUserHandler),
+                    (r"/AddDataPoint[/]?",    ph.UploadLabeledDatapointHandler),
+                    (r"/GetNewDatasetId[/]?", ph.RequestNewDatasetId),
+                    (r"/UpdateModel[/]?",     ph.UpdateModelForDatasetId),     
+                    (r"/PredictOne[/]?",      ph.PredictOneFromDatasetId),               
                     ]
 
         self.handlers_string = str(handlers)
