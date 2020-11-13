@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="gU5-u8-JLM">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -9,7 +9,7 @@
         <!--View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="HTTPSwiftExample" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="CS7323Lab5" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -152,5 +152,102 @@
             </objects>
             <point key="canvasLocation" x="292" y="196.55172413793105"/>
         </scene>
+        <!--Painting Painting View Controller-->
+        <scene sceneID="q1b-dl-mPL">
+            <objects>
+                <viewController id="gU5-u8-JLM" customClass="PaintingPaintingViewController" customModule="CS7323Lab5" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="uiU-Sm-2Jx"/>
+                        <viewControllerLayoutGuide type="bottom" id="szS-2P-lT4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="SFF-Un-Kxh">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="vbK-xD-fhq">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="vbK-xD-fhq" secondAttribute="height" multiplier="375:667" id="Lqx-6W-dBZ"/>
+                                </constraints>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="owy-js-b9I">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="owy-js-b9I" secondAttribute="height" multiplier="375:667" id="wwU-6V-4YC"/>
+                                </constraints>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JGV-Vs-exD">
+                                <rect key="frame" x="0.0" y="577" width="109" height="167"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageSizeForAccessibilityContentSizeCategory="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bc7-qW-8QG">
+                                        <rect key="frame" x="0.0" y="0.0" width="55" height="167"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="167" id="HOn-Cb-c18"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="54" id="PqT-3i-wUy"/>
+                                            <constraint firstAttribute="width" constant="55" id="msl-dc-9R8"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="Black"/>
+                                        <connections>
+                                            <action selector="buttonPressed:" destination="gU5-u8-JLM" eventType="touchUpInside" id="aa0-p6-5Hk"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="daf-Yr-7Bn">
+                                        <rect key="frame" x="55" y="0.0" width="54" height="167"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="54" id="tAc-l2-aLT"/>
+                                            <constraint firstAttribute="height" constant="167" id="vGt-q1-LlG"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="Eraser"/>
+                                        <connections>
+                                            <action selector="buttonPressed:" destination="gU5-u8-JLM" eventType="touchUpInside" id="9k9-z2-ftE"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="bc7-qW-8QG" firstAttribute="top" secondItem="JGV-Vs-exD" secondAttribute="top" id="5U1-8n-k4f"/>
+                                    <constraint firstItem="daf-Yr-7Bn" firstAttribute="top" secondItem="JGV-Vs-exD" secondAttribute="top" id="84E-PF-JS5"/>
+                                    <constraint firstItem="bc7-qW-8QG" firstAttribute="leading" secondItem="JGV-Vs-exD" secondAttribute="leading" id="ARk-sq-K1P"/>
+                                    <constraint firstItem="daf-Yr-7Bn" firstAttribute="leading" secondItem="bc7-qW-8QG" secondAttribute="trailing" id="ilr-KS-bbZ"/>
+                                </constraints>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QkV-E6-M7b">
+                                <rect key="frame" x="276" y="317" width="100" height="77"/>
+                                <state key="normal" image="clickme"/>
+                                <connections>
+                                    <action selector="sendDigitImage:" destination="gU5-u8-JLM" eventType="touchUpInside" id="Lsx-Em-M57"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="QkV-E6-M7b" secondAttribute="trailing" constant="-1" id="5PS-es-A9r"/>
+                            <constraint firstItem="owy-js-b9I" firstAttribute="top" secondItem="vbK-xD-fhq" secondAttribute="top" id="Dxg-VZ-Gyy"/>
+                            <constraint firstItem="vbK-xD-fhq" firstAttribute="bottom" secondItem="SFF-Un-Kxh" secondAttribute="bottomMargin" id="IcH-JY-k1I"/>
+                            <constraint firstItem="owy-js-b9I" firstAttribute="bottom" secondItem="vbK-xD-fhq" secondAttribute="bottom" id="Y9X-tp-uKI"/>
+                            <constraint firstAttribute="bottom" secondItem="JGV-Vs-exD" secondAttribute="bottom" constant="-77" id="aFU-iz-tf0"/>
+                            <constraint firstItem="vbK-xD-fhq" firstAttribute="leading" secondItem="SFF-Un-Kxh" secondAttribute="leadingMargin" constant="-16" id="acF-OL-ztz"/>
+                            <constraint firstItem="vbK-xD-fhq" firstAttribute="top" secondItem="SFF-Un-Kxh" secondAttribute="topMargin" id="cH7-OH-JaX"/>
+                            <constraint firstItem="owy-js-b9I" firstAttribute="trailing" secondItem="vbK-xD-fhq" secondAttribute="trailing" id="duQ-cL-BnK"/>
+                            <constraint firstItem="owy-js-b9I" firstAttribute="leading" secondItem="vbK-xD-fhq" secondAttribute="leading" id="fMX-mM-sgP"/>
+                            <constraint firstItem="QkV-E6-M7b" firstAttribute="top" secondItem="uiU-Sm-2Jx" secondAttribute="bottom" constant="317" id="hdt-s2-nwQ"/>
+                            <constraint firstItem="JGV-Vs-exD" firstAttribute="leading" secondItem="SFF-Un-Kxh" secondAttribute="leading" id="kVc-Ve-v9U"/>
+                            <constraint firstItem="vbK-xD-fhq" firstAttribute="centerX" secondItem="SFF-Un-Kxh" secondAttribute="centerX" id="z42-be-UR1"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bottomStackView" destination="JGV-Vs-exD" id="Ed1-yC-5nW"/>
+                        <outlet property="mainImageView" destination="vbK-xD-fhq" id="AK8-8p-5dU"/>
+                        <outlet property="tempImageView" destination="owy-js-b9I" id="7cW-4G-oSH"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FS2-D6-ybd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1031.2" y="194.75262368815595"/>
+        </scene>
     </scenes>
+    <resources>
+        <image name="Black" width="53" height="332"/>
+        <image name="Eraser" width="55" height="167"/>
+        <image name="clickme" width="100" height="77"/>
+    </resources>
 </document>
