@@ -36,11 +36,21 @@ class AddUserHandler(BaseHandler):
         
         dbid = self.db.users.insert(
             {"username":username,"password":password,"dsids":dsids}
-            );
+            )
         
         self.write_json({"username":username,
                          "password":password,
                          "dsids":dsids})
+
+
+class UploadImageHandler(BaseHandler):
+    def post(self):
+        data = self.request.files.get("image", None)[0]
+        print("receive : ", data['filename'])
+        save_to = 'static/uploads/{}'.format(data['filename'])
+        with open(save_to,'wb') as f: #binary format
+                f.write(data['body'])
+
 
 class UploadLabeledDatapointHandler(BaseHandler):
     def post(self):
@@ -55,7 +65,7 @@ class UploadLabeledDatapointHandler(BaseHandler):
 
         dbid = self.db.labeledinstances.insert(
             {"feature":fvals,"label":label,"dsid":sess}
-            );
+            )
         self.write_json({"id":str(dbid),
             "feature":[str(len(fvals))+" Points Received",
                     "min of: " +str(min(fvals)),
@@ -81,12 +91,12 @@ class UpdateModelForDatasetId(BaseHandler):
 
 
         # create feature vectors from database
-        f=[];
+        f=[]
         for a in self.db.labeledinstances.find({"dsid":dsid}): 
             f.append([float(val) for val in a['feature']])
 
         # create label vector from database
-        l=[];
+        l=[]
         for a in self.db.labeledinstances.find({"dsid":dsid}): 
             l.append(a['label'])
 
@@ -97,8 +107,8 @@ class UpdateModelForDatasetId(BaseHandler):
         
         else:
             print("Using K-Nearest Neighbors")
-            c1 = KNeighborsClassifier(n_neighbors=1);
-        acc = -1;
+            c1 = KNeighborsClassifier(n_neighbors=1)
+        acc = -1
         if l:
             c1.fit(f,l) # training
             lstar = c1.predict(f)
@@ -119,8 +129,8 @@ class PredictOneFromDatasetId(BaseHandler):
         '''
         data = json.loads(self.request.body.decode("utf-8"))    
 
-        vals = data['feature'];
-        fvals = [float(val) for val in vals];
+        vals = data['feature']
+        fvals = [float(val) for val in vals]
         fvals = np.array(fvals).reshape(1, -1)
         dsid  = data['dsid']
 
@@ -130,5 +140,5 @@ class PredictOneFromDatasetId(BaseHandler):
             print('Loading Model From DB')
             tmp = self.db.models.find_one({"dsid":dsid})
             self.clf = pickle.loads(tmp['model'])
-        predLabel = self.clf.predict(fvals);
+        predLabel = self.clf.predict(fvals)
         self.write_json({"prediction":str(predLabel)})

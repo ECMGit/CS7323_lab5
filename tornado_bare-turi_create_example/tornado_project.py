@@ -39,7 +39,8 @@ class Application(tornado.web.Application):
                     (r"/AddDataPoint[/]?",    ph.UploadLabeledDatapointHandler),
                     (r"/GetNewDatasetId[/]?", ph.RequestNewDatasetId),
                     (r"/UpdateModel[/]?",     ph.UpdateModelForDatasetId),     
-                    (r"/PredictOne[/]?",      ph.PredictOneFromDatasetId),               
+                    (r"/PredictOne[/]?",      ph.PredictOneFromDatasetId),
+                    (r"/UploadImage[/]?",     ph.UploadImageHandler),             
                     ]
 
         self.handlers_string = str(handlers)

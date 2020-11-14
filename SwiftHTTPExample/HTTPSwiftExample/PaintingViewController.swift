@@ -5,7 +5,7 @@
 //  Created by 沈俊豪 on 11/11/20.
 //  Copyright © 2020 Eric Larson. All rights reserved.
 //
-let SERVER_URL = "https://002e34c6-fcab-471d-ac0d-19c2446c4ec6.mock.pstmn.io"
+let SERVER_URL = "http://192.168.1.129:8000"
 
 
 import UIKit
@@ -189,13 +189,16 @@ class PaintingPaintingViewController: UIViewController{
         UIGraphicsEndImageContext()
         
         let sendImage = convertImage(image: image!)
-        let baseURL = "\(SERVER_URL)/PostImage"
+        let baseURL = "\(SERVER_URL)/UploadImage"
         let imageData = sendImage.jpegData(compressionQuality: 0.2)!
         let params : Parameters = ["userid": userid] //Optional for extra parameter
         AF.upload(multipartFormData:
             {
                 (multipartFormData) in
-                multipartFormData.append(imageData, withName: "image", fileName: "file.jpeg", mimeType: "image/jpeg")
+                multipartFormData.append(imageData,
+                                         withName: "image",
+                                         fileName: "file.jpeg",
+                                         mimeType: "image/jpeg")
                 for (key, value) in params
                 {
                     multipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
@@ -209,7 +212,7 @@ class PaintingPaintingViewController: UIViewController{
     }
     
     // MARK: convert Image
-    // convert image into 28 x 28 image in black background and white draw
+    // convert image into 28 x 28 image
     // then convert image into 2d array and convert 2d to 1d -- on server-side
     func convertImage(image: UIImage)->UIImage{
 //        let widthRatio = targetSize.width / image.size.width
@@ -218,13 +221,7 @@ class PaintingPaintingViewController: UIViewController{
         image.draw(in: CGRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        var invertimage : UIImage!
-        if let filter = CIFilter(name: "CIColorInvert") {
-            print("============ invert image ============")
-            filter.setValue(CIImage(image: newImage!), forKey: kCIInputImageKey)
-            invertimage = UIImage(ciImage: filter.outputImage!)
-        }
-        return invertimage
+        return newImage!
     }
     
     
