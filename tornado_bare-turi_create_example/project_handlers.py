@@ -59,7 +59,14 @@ class UploadLabeledDatapointHandler(BaseHandler):
         data = json.loads(self.request.body.decode("utf-8"))
 
         vals = data['feature']
-        fvals = [float(val) for val in vals]
+        fvals = [float(val) for row in vals for val in row]
+        fvals = np.array(fvals)
+        
+        if np.mean(fvals) > 100:
+            fvals = 255 - fvals ##convert to white on black if it is black on white
+            
+        fvals = fvals.flatten().tolist()
+        
         label = data['label']
         sess  = data['dsid']
 
@@ -129,10 +136,13 @@ class PredictOneFromDatasetId(BaseHandler):
         '''
         data = json.loads(self.request.body.decode("utf-8"))    
 
-        vals = data['feature']
-        fvals = [float(val) for val in vals]
+        vals = data['feature'];
+        fvals = [float(val) for row in vals for val in row]
         fvals = np.array(fvals).reshape(1, -1)
         dsid  = data['dsid']
+        
+        if np.mean(fvals) > 100:
+            fvals = 255 - fvals ##convert to white on black if it is black on white
 
         # load the model from the database (using pickle)
         # we are blocking tornado!! no!!
