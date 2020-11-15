@@ -46,10 +46,25 @@ class AddUserHandler(BaseHandler):
 class UploadImageHandler(BaseHandler):
     def post(self):
         data = self.request.files.get("image", None)[0]
-        print("receive : ", data['filename'])
+        
+        print("received : filename ", data["filename"])
         save_to = 'static/uploads/{}'.format(data['filename'])
-        with open(save_to,'wb') as f: #binary format
-                f.write(data['body'])
+        with open(save_to,'wb') as f:
+            f.write(data['body'])
+            
+            
+        image  = Image.open("static/uploads/file.jpeg").convert("L")
+        image_array = (255 - np.array(image))
+        fvals = image_array.flatten().reshape(1,-1)
+        # print(fvals.shape)
+        print(fvals)
+    
+       	if(self.clf == []):
+            print('Loading Model From DB')
+            tmp = self.db.models.find_one({"dsid":0})
+            self.clf = pickle.loads(tmp['model'])
+        predLabel = self.clf.predict(fvals)
+        self.write_json({"prediction":str(predLabel)})
 
 
 class UploadLabeledDatapointHandler(BaseHandler):
