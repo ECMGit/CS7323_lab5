@@ -1,13 +1,37 @@
-CS7323 flip4:
+CS7323 Lab5:
 
 Student : Junhao Shen, CJ Sayre, Reid Russell
 
-For Thought:
+backend
 
-11. Is the current method of saving the classifier blocking to the tornado IOLoop? Justify your response.
+```
+> python tornado_project.py
+```
 
-    Answer: Yes, indeed, we use a blocking call in the function, the server will response after model trained.
+using AlamoFire for Http request on IOS
 
-12. Would the models saved on one server be useable by another server if we migrated the saved documents in MongoDB? Justify your response.
+Drawing page reference: https://github.com/vin20777/Swift-Paint
 
-    Answer: Yes, we can reuse the model data to another server if we migrated the document in MongoDB.
+
+
+
+
+API
+
+/Handlers[/]?        ph.PrintHandlers
+
+/AddDataPoint[/]?    ph.UploadLabeledDatapointHandler
+
+/UpdateModel[/]?,     ph.UpdateModelForDatasetI			update Choosing model by choosing dataset
+
+/PredictOne[/]?,      ph.PredictOneFromDatasetId),			predict by choosing model
+
+/UploadImage[/]?,     ph.UploadImageHandler),				upload image
+
+/Login[/]?,           auth.LoginHandler),									user login
+
+/Register[/]?,        auth.RegisterHandler),								user register
+
+/Logout[/]?,          auth.LogoutHandler),								user logout
+
+/UploadTrainSet[/]?,  ph.UploadTrainDataHandler)			(optional API) uploading training dataset
