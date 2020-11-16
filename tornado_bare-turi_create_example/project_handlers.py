@@ -7,7 +7,7 @@ from tornado.web import HTTPError
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.options import define, options
-
+from PIL import Image
 from basehandler import BaseHandler
 from pycket.session import SessionMixin
 from sklearn.neighbors import KNeighborsClassifier
@@ -37,25 +37,22 @@ class AuthBaseHandler(BaseHandler, SessionMixin):
 class UploadImageHandler(BaseHandler):
     def post(self):
         data = self.request.files.get("image", None)[0]
-        
         print("received : filename ", data["filename"])
         save_to = 'static/uploads/{}'.format(data['filename'])
         with open(save_to,'wb') as f:
             f.write(data['body'])
             
-            
-        image  = Image.open("static/uploads/file.jpeg").convert("L")
-        image_array = (255 - np.array(image))
-        fvals = image_array.flatten().reshape(1,-1)
-        # print(fvals.shape)
-        print(fvals)
-    
-       	if(self.clf == []):
-            print('Loading Model From DB')
-            tmp = self.db.models.find_one({"dsid":0})
-            self.clf = pickle.loads(tmp['model'])
-        predLabel = self.clf.predict(fvals)
-        self.write_json({"prediction":str(predLabel)})
+        # dsid = int(data['dsid'])
+        # image  = Image.open("static/uploads/file.jpeg").convert("L")
+        # image_array = (255 - np.array(image))
+        # fvals = image_array.flatten().reshape(1,-1)
+
+       	# if(self.clf == []):
+        #     print('Loading Model From DB')
+        #     tmp = self.db.models.find_one({"dsid":dsid})
+        #     self.clf = pickle.loads(tmp['model'])
+        # predLabel = self.clf.predict(fvals)
+        self.write_json({"message":"upload successfully"})
 
 
 class UploadLabeledDatapointHandler(BaseHandler):
@@ -63,12 +60,14 @@ class UploadLabeledDatapointHandler(BaseHandler):
         '''Save data point and class label to database
         '''
         data = json.loads(self.request.body.decode("utf-8"))
-        vals = data['feature']
+        image  = Image.open("static/uploads/file.jpeg").convert("L")
+        # print(np.array(image))
+        image_array = (255 - np.array(image))
+        fvals = image_array.flatten().tolist()
         label = data['label']
-        sess  = data['dsid']
-
+        sess  = int(data['dsid'])
         dbid = self.db.labeledinstances.insert(
-            {"feature":vals,"label":label,"dsid":sess}
+            {"feature":fvals,"label":label,"dsid":sess}
             )
         # self.write_json({"id":str(dbid),
         #     "feature":[str(len(fvals))+" Points Received",
@@ -86,13 +85,15 @@ class RequestNewDatasetId(BaseHandler):
         else:
             newSessionId = float(a['dsid'])+1
         self.write_json({"dsid":newSessionId})
+
 class UpdateModelForDatasetId(BaseHandler):
-    def get(self):
+    def post(self):
         '''Train a new model (or update) for given dataset ID
         '''
-        dsid = self.get_int_arg("dsid",default=0)
-        modeltype = self.get_arg("modeltype",default="KNN")
-
+        jsondata = json.loads(self.request.body.decode("utf-8"))  
+        dsid = int(jsondata['dsid'])
+        modeltype = "KNN"
+        modeltype = jsondata["modeltype"]
 
         # create feature vectors from database
         f=[]
@@ -110,8 +111,9 @@ class UpdateModelForDatasetId(BaseHandler):
             c1 = SVC()
         
         else:
+            neighbors = int(jsondata["neighbors"])
             print("Using K-Nearest Neighbors")
-            c1 = KNeighborsClassifier(n_neighbors=1)
+            c1 = KNeighborsClassifier(n_neighbors=neighbors)
         acc = -1
         if l:
             c1.fit(f,l) # training
@@ -125,22 +127,20 @@ class UpdateModelForDatasetId(BaseHandler):
 
         # send back the resubstitution accuracy
         # if training takes a while, we are blocking tornado!! No!!
-        self.write_json({"resubAccuracy":acc})
+        self.write_json({"modelType": modeltype ,"resubAccuracy":acc})
 
 class PredictOneFromDatasetId(BaseHandler):
     def post(self):
         '''Predict the class of a sent feature vector
         '''
-        data = json.loads(self.request.body.decode("utf-8"))    
-
-        vals = data['feature']
-        fvals = [float(val) for row in vals for val in row]
-        fvals = np.array(fvals).reshape(1, -1)
-        dsid  = data['dsid']
-        
-        if np.mean(fvals) > 100:
-            fvals = 255 - fvals ##convert to white on black if it is black on white
-
+        data = json.loads(self.request.body.decode("utf-8"))
+        dsid = int(data["dsid"])
+        image  = Image.open("static/uploads/file.jpeg").convert("L")
+        # print(np.array(image))
+        image_array = (255 - np.array(image))
+        fvals = image_array.flatten().reshape(1,-1)
+        # print(fvals.shape)
+        # print(fvals)
         # load the model from the database (using pickle)
         # we are blocking tornado!! no!!
         if(self.clf == []):
@@ -149,3 +149,17 @@ class PredictOneFromDatasetId(BaseHandler):
             self.clf = pickle.loads(tmp['model'])
         predLabel = self.clf.predict(fvals)
         self.write_json({"prediction":str(predLabel)})
+
+
+class UploadTrainDataHandler(BaseHandler):
+     def post(self):
+        '''Save data point and class label to database
+        '''
+        data = json.loads(self.request.body.decode("utf-8"))
+        vals = data['feature']
+        label = data['label']
+        sess  = data['dsid']
+
+        dbid = self.db.labeledinstances.insert(
+            {"feature":vals,"label":label,"dsid":sess}
+            )

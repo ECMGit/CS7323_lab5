@@ -55,8 +55,6 @@ class LoginViewController: UIViewController, URLSessionDelegate{
         
         // data to send in body of post request (send arguments as json)
         let jsonUpload:NSDictionary = ["username": self.userNameTextBox.text, "password": self.passWordTextBox.text]
-        
-        
         let requestBody:Data? = self.convertDictionaryToData(with:jsonUpload)
         
         request.httpMethod = "POST"

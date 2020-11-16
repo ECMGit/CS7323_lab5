@@ -16,8 +16,15 @@ class PaintingPaintingViewController: UIViewController{
     @IBOutlet weak var mainImageView: UIImageView!
     @IBOutlet weak var tempImageView: UIImageView!
     @IBOutlet weak var bottomStackView: UIStackView!
+    @IBOutlet weak var predictButtonKNN: UIButton!
+    @IBOutlet weak var predictButtonSVM: UIButton!
+    @IBOutlet weak var resultLabel: UILabel!
+    @IBOutlet weak var KNNparamsTextBox: UITextField!
+    @IBOutlet weak var valueSwitcher: UISegmentedControl!
+    @IBOutlet weak var dsidTextBox: UITextField!
     
-    struct HTTPBinResponse: Decodable { let url: String }
+    
+//    struct HTTPBinResponse: Decodable { let url: String }
     
     var lastPoint = CGPoint.zero
     var red: CGFloat = 0.0
@@ -29,6 +36,9 @@ class PaintingPaintingViewController: UIViewController{
     var expanse = false
     var userid = "01"
     let targetSize = CGSize(width: 28, height: 28)
+    var KNNNeighbors:Int = 5
+    var label = 0
+    var dsid = 0
     
     let colors: [(CGFloat, CGFloat, CGFloat)] = [
         (0, 0, 0),
@@ -47,7 +57,9 @@ class PaintingPaintingViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
+        self.KNNparamsTextBox.keyboardType = .numberPad
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        view.addGestureRecognizer(tap)
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(self.expandAll))
 //        tap.delegate = self as? UIGestureRecognizerDelegate
 //        tap.numberOfTapsRequired = 2
@@ -73,6 +85,12 @@ class PaintingPaintingViewController: UIViewController{
                 self.expanse = true
             })
         }
+    }
+    
+    @objc
+    func dismissKeyboard(){
+        self.dsid = Int(self.dsidTextBox.text!) ?? 0
+        view.endEditing(true)
     }
     
     
@@ -101,6 +119,11 @@ class PaintingPaintingViewController: UIViewController{
 //        })
 //    }
     
+    @IBAction func logout(_ sender: Any) {
+        UserDefaults.standard.set(false, forKey: "status")
+        Switcher.updateRootVC()
+    }
+    
     @IBAction func buttonPressed(_ sender: AnyObject) {
         var index = sender.tag ?? 0
         if index < 0 || index >= colors.count {
@@ -116,8 +139,106 @@ class PaintingPaintingViewController: UIViewController{
     
     
     @IBAction func erase(_ sender: Any) {
-        mainImageView.image = nil
+        self.resultLabel.text = ""
+        self.mainImageView.image = nil
     }
+    
+
+    @IBAction func switchLabelValue(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            self.label = 0
+        case 1:
+            self.label = 1
+        case 2:
+            self.label = 2
+        case 3:
+            self.label = 3
+        case 4:
+            self.label = 4
+        case 5:
+            self.label = 5
+        case 6:
+            self.label = 6
+        case 7:
+            self.label = 7
+        case 8:
+            self.label = 8
+        case 9:
+            self.label = 9
+        default:
+            break
+        }
+        print("change label to:", self.label)
+    }
+    
+    @IBAction func calibrate(_ sender: Any) {
+        
+        let params : [String: String] = [
+            "dsid": String(dsid),
+            "label": String(self.label)
+        ]
+        AF.request("\(SERVER_URL)/AddDataPoint",
+                   method: .post,
+                   parameters: params,
+                   encoder: JSONParameterEncoder.default).responseJSON { response in
+            debugPrint(response)
+        }
+    }
+    
+    @IBAction func updateKNN(_ sender: Any) {
+        self.KNNNeighbors = Int(self.KNNparamsTextBox.text!) ?? 5
+        let params : [String: String] = [
+            "modeltype": "KNN",
+            "dsid": String(dsid),
+            "neighbors": String(self.KNNNeighbors)
+        ]
+        AF.request("\(SERVER_URL)/UpdateModel",
+                   method: .post,
+                   parameters: params,
+                   encoder: JSONParameterEncoder.default).responseJSON { response in
+            debugPrint(response)
+        }
+    }
+    
+    
+    @IBAction func updateSVM(_ sender: Any) {
+        let params : [String: String] = [
+            "modeltype": "SVM",
+            "dsid": String(dsid)
+        ]
+        AF.request("\(SERVER_URL)/UpdateModel",
+                   method: .post,
+                   parameters: params,
+                   encoder: JSONParameterEncoder.default).responseJSON { response in
+            debugPrint(response)
+        }
+    }
+    
+    
+    
+    @IBAction func predictNumber(_ sender: Any) {
+        let params : [String: String] = [
+            "dsid": String(self.dsid)
+        ]
+        AF.request("\(SERVER_URL)/PredictOne",
+                   method: .post,
+                   parameters: params,
+                   encoder: JSONParameterEncoder.default).responseJSON { response in
+                               print("============ get response ============")
+                               debugPrint(response)
+                               switch response.result {
+                               case .success:
+                                   let json = response.value as! NSDictionary
+                   //                print(JSON["prediction"])
+                                   let result_num = json["prediction"] as? String
+                                   self.resultLabel.text = result_num ?? ""
+                               case let .failure(error):
+                                   print(error)
+                               }
+                           }
+    }
+    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         swiped = false
@@ -181,7 +302,6 @@ class PaintingPaintingViewController: UIViewController{
         tempImageView.image?.draw(in: CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height), blendMode: CGBlendMode.normal, alpha: opacity)
         mainImageView.image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        
         tempImageView.image = nil
     }
     
@@ -208,13 +328,10 @@ class PaintingPaintingViewController: UIViewController{
                 {
                     multipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
                 }
-                print("============ sent image ============")
-        }, to:baseURL,headers:nil)
-            .responseDecodable(of: HTTPBinResponse.self) { response in
-                debugPrint(response)
-                UserDefaults.standard.set(false, forKey: "status")
-                Switcher.updateRootVC()
-            }
+        }, to:baseURL,headers:nil).responseJSON { response in
+            print("============ get response ============")
+            debugPrint(response)
+        }
         
     }
     
@@ -222,8 +339,6 @@ class PaintingPaintingViewController: UIViewController{
     // convert image into 28 x 28 image
     // then convert image into 2d array and convert 2d to 1d -- on server-side
     func convertImage(image: UIImage)->UIImage{
-//        let widthRatio = targetSize.width / image.size.width
-//        let heightRatio = targetSize.height / image.size.height
         UIGraphicsBeginImageContext(CGSize(width: targetSize.width, height: targetSize.height))
         image.draw(in: CGRect(x: 0, y: 0, width: targetSize.width, height: targetSize.height))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -238,7 +353,6 @@ class PaintingPaintingViewController: UIViewController{
 public extension DispatchQueue {
     
     private static var _onceTracker = [String]()
-
     class func once(token: String, block:()->Void) {
         objc_sync_enter(self); defer { objc_sync_exit(self) }
         

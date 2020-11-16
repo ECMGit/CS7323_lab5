@@ -36,7 +36,6 @@ class Application(tornado.web.Application):
 
         handlers = [(r"/[/]?", BaseHandler),
                     (r"/Handlers[/]?",        ph.PrintHandlers),
-                    # (r"/AddUser[/]?",         ph.AddUserHandler),
                     (r"/AddDataPoint[/]?",    ph.UploadLabeledDatapointHandler),
                     (r"/GetNewDatasetId[/]?", ph.RequestNewDatasetId),
                     (r"/UpdateModel[/]?",     ph.UpdateModelForDatasetId),     
@@ -44,7 +43,8 @@ class Application(tornado.web.Application):
                     (r"/UploadImage[/]?",     ph.UploadImageHandler),
                     (r"/Login[/]?",           auth.LoginHandler),
                     (r"/Register[/]?",        auth.RegisterHandler),
-                    (r"/Logout[/]?",          auth.LogoutHandler)             
+                    (r"/Logout[/]?",          auth.LogoutHandler),
+                    (r"/UploadTrainSet[/]?",  ph.UploadTrainDataHandler)
                     ]
 
         self.handlers_string = str(handlers)
