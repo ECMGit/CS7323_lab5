@@ -21,6 +21,7 @@ from tornado.options import define, options
 # custom imports
 from basehandler import BaseHandler
 import project_handlers as ph
+import auth
 
 # Setup information for tornado class
 define("port", default=8000, help="run on the given port", type=int)
@@ -35,12 +36,15 @@ class Application(tornado.web.Application):
 
         handlers = [(r"/[/]?", BaseHandler),
                     (r"/Handlers[/]?",        ph.PrintHandlers),
-                    (r"/AddUser[/]?",         ph.AddUserHandler),
+                    # (r"/AddUser[/]?",         ph.AddUserHandler),
                     (r"/AddDataPoint[/]?",    ph.UploadLabeledDatapointHandler),
                     (r"/GetNewDatasetId[/]?", ph.RequestNewDatasetId),
                     (r"/UpdateModel[/]?",     ph.UpdateModelForDatasetId),     
                     (r"/PredictOne[/]?",      ph.PredictOneFromDatasetId),
-                    (r"/UploadImage[/]?",     ph.UploadImageHandler),             
+                    (r"/UploadImage[/]?",     ph.UploadImageHandler),
+                    (r"/Login[/]?",           auth.LoginHandler),
+                    (r"/Register[/]?",        auth.RegisterHandler),
+                    (r"/Logout[/]?",          auth.LogoutHandler)             
                     ]
 
         self.handlers_string = str(handlers)

@@ -114,6 +114,11 @@ class PaintingPaintingViewController: UIViewController{
         }
     }
     
+    
+    @IBAction func erase(_ sender: Any) {
+        mainImageView.image = nil
+    }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         swiped = false
         if let touch = touches.first {
@@ -207,6 +212,8 @@ class PaintingPaintingViewController: UIViewController{
         }, to:baseURL,headers:nil)
             .responseDecodable(of: HTTPBinResponse.self) { response in
                 debugPrint(response)
+                UserDefaults.standard.set(false, forKey: "status")
+                Switcher.updateRootVC()
             }
         
     }

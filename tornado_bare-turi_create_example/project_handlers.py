@@ -9,7 +9,7 @@ from tornado.ioloop import IOLoop
 from tornado.options import define, options
 
 from basehandler import BaseHandler
-
+from pycket.session import SessionMixin
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 import pickle
@@ -24,23 +24,14 @@ class PrintHandlers(BaseHandler):
         '''
         self.set_header("Content-Type", "application/json")
         self.write(self.application.handlers_string.replace('),','),\n'))
+
+class AuthBaseHandler(BaseHandler, SessionMixin):
+    def get_current_user(self):
+        return self.session.get('user_info', None)
         
-class AddUserHandler(BaseHandler):
-    def post(self):
+# class AddUserHandler(BaseHandler):
+#     def post(self):
         
-        data = json.loads(self.request.body.decode("utf-8"))
-        
-        username = data['username']
-        password = data['password']
-        dsids = []
-        
-        dbid = self.db.users.insert(
-            {"username":username,"password":password,"dsids":dsids}
-            )
-        
-        self.write_json({"username":username,
-                         "password":password,
-                         "dsids":dsids})
 
 
 class UploadImageHandler(BaseHandler):
