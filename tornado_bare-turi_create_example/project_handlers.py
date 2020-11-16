@@ -72,27 +72,18 @@ class UploadLabeledDatapointHandler(BaseHandler):
         '''Save data point and class label to database
         '''
         data = json.loads(self.request.body.decode("utf-8"))
-
         vals = data['feature']
-        fvals = [float(val) for row in vals for val in row]
-        fvals = np.array(fvals)
-        
-        if np.mean(fvals) > 100:
-            fvals = 255 - fvals ##convert to white on black if it is black on white
-            
-        fvals = fvals.flatten().tolist()
-        
         label = data['label']
         sess  = data['dsid']
 
         dbid = self.db.labeledinstances.insert(
-            {"feature":fvals,"label":label,"dsid":sess}
+            {"feature":vals,"label":label,"dsid":sess}
             )
-        self.write_json({"id":str(dbid),
-            "feature":[str(len(fvals))+" Points Received",
-                    "min of: " +str(min(fvals)),
-                    "max of: " +str(max(fvals))],
-            "label":label})
+        # self.write_json({"id":str(dbid),
+        #     "feature":[str(len(fvals))+" Points Received",
+        #             "min of: " +str(min(fvals)),
+        #             "max of: " +str(max(fvals))],
+        #     "label":label})
 
 class RequestNewDatasetId(BaseHandler):
     def get(self):
@@ -151,7 +142,7 @@ class PredictOneFromDatasetId(BaseHandler):
         '''
         data = json.loads(self.request.body.decode("utf-8"))    
 
-        vals = data['feature'];
+        vals = data['feature']
         fvals = [float(val) for row in vals for val in row]
         fvals = np.array(fvals).reshape(1, -1)
         dsid  = data['dsid']
